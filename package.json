@@ -1,0 +1,23 @@
+{
+  "name": "cli",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "gen:db": "tsc && node ./dist/index.js gen:db",
+    "flush:dist": "rm -rf ./dist"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/select": "^1.2.11",
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.0",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.3",
+    "@types/pg": "^8.10.2"
+  }
+}
