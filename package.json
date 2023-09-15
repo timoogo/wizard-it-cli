@@ -14,10 +14,13 @@
     "@inquirer/select": "^1.2.11",
     "commander": "^11.0.0",
     "inquirer": "^9.2.0",
-    "pg": "^8.11.3"
+    "mysql2": "^3.6.1",
+    "pg": "^8.11.3",
+    "pg-promise": "^11.5.4"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.3",
-    "@types/pg": "^8.10.2"
+    "@types/pg": "^8.10.2",
+    "typescript": "^5.2.2"
   }
 }
