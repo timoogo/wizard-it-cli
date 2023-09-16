@@ -6,6 +6,7 @@
   "main": "src/index.ts",
   "scripts": {
     "gen:db": "tsc && node ./dist/index.js gen:db",
+    "gen:table": "tsc && node ./dist/GenerateTable.js gen:table",
     "flush:dist": "rm -rf ./dist"
   },
   "author": "",

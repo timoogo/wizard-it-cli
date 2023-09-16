@@ -1,83 +1,58 @@
-import inquirer from "inquirer";
-import { DatabaseType } from "../contracts/Database.type.js";
+import inquirer from 'inquirer';
+import { DatabaseType } from '../contracts/Database.type.js';
+import { ConnectionDetails } from '../contracts/ConnectionDetails.interface.js';
 import mysql from 'mysql2/promise';
 
-import { DB_NAME_SAMPLES } from "../Datas/DBNames.constants.js";
-import { ConnectionDetails, PostgresConnectionDetails } from "../contracts/ConnectionDetails .interface.js";
-
-import pkg from 'pg';
-const { Client: PGClient } = pkg;
-
 export async function askForDBDriver(): Promise<DatabaseType> {
-    const { driver } = await inquirer.prompt({
+    const answers = await inquirer.prompt({
         type: 'list',
         name: 'driver',
-        message: 'Select a database driver',
-        choices: ['postgres', 'mysql']
+        message: 'Choose a database driver:',
+        choices: ['mysql', 'postgres']
     });
-
-    return driver;
+    return answers.driver;
 }
 
-
-export async function connectToDB(connectionDetails: ConnectionDetails, databaseType: DatabaseType): Promise<any> {
-    if (databaseType === 'postgres') {
-        const client = new PGClient(connectionDetails);
-        await client.connect();
-        return client;
-    } else if (databaseType === 'mysql') {
-        const connection = await mysql.createConnection(connectionDetails);
-        return connection;
-    } else {
-        throw new Error("Unsupported database type");
-    }
+export async function askForDBName(): Promise<string> {
+    const answers = await inquirer.prompt({
+        type: 'input',
+        name: 'dbName',
+        message: 'Enter the name of the database you want to connect to:'
+    });
+    return answers.dbName;
 }
 
-
-export function getRandomDbName(): string {
-    const randomIndex = Math.floor(Math.random() * DB_NAME_SAMPLES.length);
-    return DB_NAME_SAMPLES[randomIndex];
-}
-
-export function getBasicQuestions(driver: DatabaseType) {
-    const defaults: Record<DatabaseType, string> = {
-        'postgres': '5432',
-        'mysql': '3306'
-    };
-
+export function getBasicQuestions(driver: DatabaseType, dbName: string): any[] {
     return [
         {
             type: 'input',
             name: 'host',
-            message: 'Database host:',
-            default: 'localhost'
+            message: 'Enter the host:'
         },
         {
             type: 'input',
-            name: 'port',
-            message: 'Port:',
-            default: defaults[driver],
-            validate: (value: string) => {
-                const valid = !isNaN(parseFloat(value));
-                return valid || 'Please enter a valid port number.';
-            },
-            filter: Number
-        },
-        {
-            type: 'input',
-            name: 'dbName',
-            message: 'Name of the database to create:',
-            default: getRandomDbName()
-        },
-        {
-            type: 'input',
-            name: driver === 'mysql' ? 'user' : 'username',
-            message: 'Username:'
+            name: 'user',
+            message: 'Enter the user:'
         },
         {
             type: 'password',
             name: 'password',
-            message: 'Password:',
+            message: 'Enter the password:'
+        },
+        {
+            type: 'input',
+            name: 'database',
+            message: 'Enter the database:',
+            default: dbName
         }
     ];
+}
+
+export async function connectToDB(connectionDetails: ConnectionDetails, driver: DatabaseType): Promise<mysql.Connection | undefined> {
+    if (driver === 'mysql') {
+        return await mysql.createConnection(connectionDetails);
+    } else if (driver === 'postgres') {
+        // Postgres connection logic here
+    }
+    return undefined;
 }
